@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-api
+  template:
+    metadata:
+      labels:
+        app: flask-api
+    spec:
+      containers:
+      - name: flask-api
+        image: saungkertas89/flask_datadog_demo:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DD_AGENT_HOST
+          value: "datadog-agent"
+        - name: DD_ENV
+          value: "dev"
+        - name: DD_SERVICE
+          value: "flask-api"
+        - name: DD_VERSION
+          value: "1.0.0"
+        - name: DD_LOGS_INJECTION
+          value: "true"
