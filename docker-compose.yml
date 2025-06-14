@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  flask-api:
+    build: .
+    ports:
+      - "5001:5000"
+    environment:
+      - DD_AGENT_HOST=datadog
+      - DD_ENV=dev
+      - DD_SERVICE=flask-api
+      - DD_VERSION=1.0.0
+      - DD_LOGS_ENABLED=true
+    depends_on:
+      - datadog
+
+  datadog:
+    image: datadog/agent:latest
+    container_name: datadog-agent
+    environment:
+      - DD_API_KEY=${DD_API_KEY}           # Set your Datadog API key in .env or environment
+      - DD_APM_ENABLED=true                # Enable APM tracing
+      - DD_LOGS_ENABLED=true               # Enable logs collection
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+      - DD_LOGS_INJECTION=true
+      - DD_SITE=us5.datadoghq.com            # Change if using EU site or others
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+    ports:
+      - "8126:8126"                       # APM trace agent port
+    restart: always

@@ -1,0 +1,6 @@
+flask
+ddtrace
+gunicorn
+python-json-logger
+datadog
+requests
